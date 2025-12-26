@@ -31,3 +31,4 @@ report-data.json
 # Logs
 # =========================
 npm-debug.log*
+.gitignore
