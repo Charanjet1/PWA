@@ -1,0 +1,33 @@
+# =========================
+# Node
+# =========================
+node_modules/
+
+# =========================
+# Playwright
+# =========================
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+trace.zip
+*.webm
+*.png
+
+# =========================
+# Generated PDFs & Data
+# =========================
+pdfs/
+*.pdf
+report-data.json
+
+# =========================
+# Env
+# =========================
+.env
+.env.local
+
+# =========================
+# Logs
+# =========================
+npm-debug.log*
