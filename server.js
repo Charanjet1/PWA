@@ -7,7 +7,14 @@ const app = express();
 
 // Middleware
 app.use(express.json({ limit: '50mb' }));
+
+// Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve root as app.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'app.html'));
+});
 
 // CORS headers for development
 app.use((req, res, next) => {
