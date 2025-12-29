@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/generate-pdf", "destination": "/server.js" },
-    { "source": "/api/health", "destination": "/server.js" },
-    { "source": "/api/pdfs", "destination": "/server.js" }
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/",
+      "dest": "/app.html"
+    }
   ],
   "headers": [
     {
