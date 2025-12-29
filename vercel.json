@@ -1,46 +1,22 @@
 {
   "version": 2,
-  "functions": {
-    "api/generate-pdf.js": {
-      "memory": 2048,
-      "maxDuration": 60
-    }
-  },
   "rewrites": [
-    {
-      "source": "/api/generate-pdf",
-      "destination": "/server.js"
-    },
-    {
-      "source": "/api/health",
-      "destination": "/server.js"
-    },
-    {
-      "source": "/api/pdfs",
-      "destination": "/server.js"
-    }
+    { "source": "/api/generate-pdf", "destination": "/server.js" },
+    { "source": "/api/health", "destination": "/server.js" },
+    { "source": "/api/pdfs", "destination": "/server.js" }
   ],
   "headers": [
     {
       "source": "/sw.js",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        },
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
       ]
     },
     {
       "source": "/manifest.json",
       "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/manifest+json"
-        }
+        { "key": "Content-Type", "value": "application/manifest+json" }
       ]
     }
   ]
