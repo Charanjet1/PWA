@@ -30,10 +30,6 @@
     {
       "src": "/",
       "dest": "/public/app.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/app.html"
     }
   ]
 }

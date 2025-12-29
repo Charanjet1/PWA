@@ -16,11 +16,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Root route - serve app.html
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public','app.html'));
-// });
-
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -30,8 +25,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// PDF Generation API
-app.post('/api/generate-pdf', async (req, res) => {// PDF Generation API
 // PDF Generation API
 app.post('/api/generate-pdf', async (req, res) => {
   console.log('📄 PDF generation request received');
@@ -151,106 +144,6 @@ app.post('/api/generate-pdf', async (req, res) => {
     }
   }
 });
-  console.log('📄 PDF generation request received');
-  
-  try {
-    const reportData = req.body;
-    
-    if (!reportData || !reportData.rooms) {
-      return res.status(400).json({ 
-        error: 'Invalid report data',
-        message: 'Report data is missing required fields'
-      });
-    }
-
-    // Create pdfs directory if it doesn't exist
-    const pdfsDir = path.join(__dirname, 'pdfs');
-    if (!fs.existsSync(pdfsDir)) {
-      fs.mkdirSync(pdfsDir, { recursive: true });
-      console.log('📁 Created pdfs directory');
-    }
-
-    // Launch Playwright browser
-    console.log('🌐 Launching browser...');
-    const browser = await chromium.launch({ 
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    
-    const page = await browser.newPage();
-
-    // Inject report data into page
-    await page.addInitScript(data => {
-      window.__REPORT_DATA__ = data;
-    }, reportData);
-
-    // Load report page
-    const reportPath = `file://${path.join(__dirname, 'report-generator.html')}`;
-    console.log('📖 Loading report template...');
-    
-    await page.goto(reportPath, {
-      waitUntil: 'networkidle',
-      timeout: 30000
-    });
-
-    // Wait for charts to render
-    await page.waitForTimeout(2000);
-
-    // Generate PDF filename
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const clientNameSafe = (reportData.clientName || 'report')
-      .replace(/[^a-z0-9]/gi, '-')
-      .toLowerCase();
-    const filename = `inspection-${clientNameSafe}-${timestamp}.pdf`;
-    const pdfPath = path.join(pdfsDir, filename);
-
-    // Generate PDF
-    console.log('📄 Generating PDF...');
-    await page.pdf({
-      path: pdfPath,
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '10mm',
-        right: '10mm',
-        bottom: '10mm',
-        left: '10mm'
-      },
-      preferCSSPageSize: true
-    });
-
-    await browser.close();
-    console.log('✅ PDF generated successfully:', filename);
-
-    // Send PDF file
-    res.download(pdfPath, filename, (err) => {
-      if (err) {
-        console.error('❌ Download error:', err);
-        if (!res.headersSent) {
-          res.status(500).json({ error: 'Failed to download PDF' });
-        }
-      } else {
-        console.log('📤 PDF sent to client');
-        // Optionally delete PDF after sending
-        // setTimeout(() => {
-        //   fs.unlinkSync(pdfPath);
-        //   console.log('🗑️ Temporary PDF deleted');
-        // }, 5000);
-      }
-    });
-
-  } catch (error) {
-    console.error('❌ PDF Generation Error:', error);
-    
-    if (!res.headersSent) {
-      res.status(500).json({ 
-        error: 'Failed to generate PDF',
-        message: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-      });
-    }
-  }
-});
 
 // List all generated PDFs
 app.get('/api/pdfs', (req, res) => {
@@ -301,6 +194,6 @@ app.listen(PORT, HOST, () => {
   console.log(`📱 PWA App:     http://localhost:${PORT}`);
   console.log(`🔌 API Health:  http://localhost:${PORT}/api/health`);
   console.log(`📄 PDF API:     http://localhost:${PORT}/api/generate-pdf`);
-  console.log(`📁 PDFs List:   http://localhost:${PORT}/api/pdfs`);
+  console.log(`📂 PDFs List:   http://localhost:${PORT}/api/pdfs`);
   console.log('===========================================\n');
 });
