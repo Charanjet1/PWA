@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
+ <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#473c39">
 
 <!-- iOS Support -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2234,10 +2234,8 @@ function showInstallButton() {
         }
     });
     
-    // Only add to login page
-    if (document.getElementById('loginPage')) {
-        document.body.appendChild(installBtn);
-    }
+    // Add to body (works on any page)
+    document.body.appendChild(installBtn);
     
     // Auto-hide after 30 seconds
     setTimeout(() => {
@@ -2341,5 +2339,14 @@ style.textContent = `
 document.head.appendChild(style);
     </script>
 </div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(reg => console.log('✅ SW registered:', reg.scope))
+      .catch(err => console.error('❌ SW failed:', err));
+  });
+}
+</script>
 </body>
 </html>

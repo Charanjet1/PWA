@@ -1,34 +1,47 @@
 {
   "version": 2,
   "functions": {
-    "server.js": {
+    "api/generate-pdf.js": {
       "memory": 2048,
       "maxDuration": 60
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
+      "source": "/api/generate-pdf",
+      "destination": "/server.js"
     },
     {
-      "src": "/sw.js",
-      "dest": "/sw.js",
-      "headers": {
-        "Cache-Control": "public, max-age=0, must-revalidate",
-        "Service-Worker-Allowed": "/"
-      }
+      "source": "/api/health",
+      "destination": "/server.js"
     },
     {
-      "src": "/manifest.json",
-      "dest": "/manifest.json",
-      "headers": {
-        "Content-Type": "application/manifest+json"
-      }
+      "source": "/api/pdfs",
+      "destination": "/server.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
     }
   ]
 }
